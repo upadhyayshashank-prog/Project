@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Airlines Management System</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to bottom right, #6a11cb, #2575fc);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      text-align: center;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 10px;
+      padding: 20px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    h1, h2 {
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin: 15px 0;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 1rem;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      background: #ff6f61;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #ff4433;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .output {
+      margin-top: 20px;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Airlines Management System</h1>
+    <div id="flight-search">
+      <h2>Search Flights</h2>
+      <div class="form-group">
+        <label for="from">From:</label>
+        <input type="text" id="from" placeholder="Enter departure city">
+      </div>
+      <div class="form-group">
+        <label for="to">To:</label>
+        <input type="text" id="to" placeholder="Enter destination city">
+      </div>
+      <div class="form-group">
+        <label for="date">Date:</label>
+        <input type="date" id="date">
+      </div>
+      <button onclick="searchFlights()">Search Flights</button>
+    </div>
+
+    <div id="flight-results" class="hidden">
+      <h2>Available Flights</h2>
+      <ul id="flights-list"></ul>
+      <button onclick="goBack()">Back</button>
+    </div>
+
+    <div id="booking-confirmation" class="hidden">
+      <h2>Booking Confirmation</h2>
+      <p class="output" id="booking-details"></p>
+      <button onclick="restart()">Book Another Flight</button>
+    </div>
+  </div>
+
+  <script>
+    // Dummy flight data
+    const flights = [
+      { from: "New York", to: "London", date: "2024-12-01", flight: "AA123", time: "10:00 AM" },
+      { from: "Los Angeles", to: "Tokyo", date: "2024-12-01", flight: "JL456", time: "2:00 PM" },
+      { from: "Delhi", to: "Dubai", date: "2024-12-02", flight: "EK789", time: "6:00 AM" }
+    ];
+
+    function searchFlights() {
+      const from = document.getElementById('from').value.trim();
+      const to = document.getElementById('to').value.trim();
+      const date = document.getElementById('date').value;
+
+      const results = flights.filter(flight =>
+        flight.from.toLowerCase() === from.toLowerCase() &&
+        flight.to.toLowerCase() === to.toLowerCase() &&
+        flight.date === date
+      );
+
+      if (results.length > 0) {
+        displayFlights(results);
+      } else {
+        alert('No flights found. Please try different details.');
+      }
+    }
+
+    function displayFlights(flights) {
+      const flightSearchDiv = document.getElementById('flight-search');
+      const flightResultsDiv = document.getElementById('flight-results');
+      const flightsList = document.getElementById('flights-list');
+
+      flightsList.innerHTML = '';
+      flights.forEach(flight => {
+        const li = document.createElement('li');
+        li.textContent = `${flight.flight} - ${flight.from} to ${flight.to} at ${flight.time}`;
+        const bookButton = document.createElement('button');
+        bookButton.textContent = "Book Now";
+        bookButton.onclick = () => confirmBooking(flight);
+        li.appendChild(bookButton);
+        flightsList.appendChild(li);
+      });
+
+      flightSearchDiv.classList.add('hidden');
+      flightResultsDiv.classList.remove('hidden');
+    }
+
+    function confirmBooking(flight) {
+      const flightResultsDiv = document.getElementById('flight-results');
+      const bookingConfirmationDiv = document.getElementById('booking-confirmation');
+      const bookingDetails = document.getElementById('booking-details');
+
+      bookingDetails.textContent = `Your flight ${flight.flight} from ${flight.from} to ${flight.to} on ${flight.date} at ${flight.time} has been booked successfully!`;
+
+      flightResultsDiv.classList.add('hidden');
+      bookingConfirmationDiv.classList.remove('hidden');
+    }
+
+    function goBack() {
+      const flightSearchDiv = document.getElementById('flight-search');
+      const flightResultsDiv = document.getElementById('flight-results');
+
+      flightSearchDiv.classList.remove('hidden');
+      flightResultsDiv.classList.add('hidden');
+    }
+
+    function restart() {
+      const flightSearchDiv = document.getElementById('flight-search');
+      const bookingConfirmationDiv = document.getElementById('booking-confirmation');
+
+      flightSearchDiv.classList.remove('hidden');
+      bookingConfirmationDiv.classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
